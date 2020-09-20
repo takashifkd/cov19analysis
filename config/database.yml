@@ -79,10 +79,10 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
-  <<: *default
-  adapter: postgresql
-  encoding: unicode
-  pool: 5
   database: cov19analysis_production
   username: cov19analysis
   password: <%= ENV['COV19ANALYSIS_DATABASE_PASSWORD'] %>
+  <<: *default
+  #adapter: postgresql
+  #encoding: unicode
+  #pool: 5
