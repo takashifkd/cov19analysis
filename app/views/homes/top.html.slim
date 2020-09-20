@@ -1,0 +1,90 @@
+h1 トップ画面
+
+.mb-3
+h3 アプリ説明<br>
+p 「read me」ボタンリンク先よりアプリ作成目的、学習内容をご確認ください。
+= link_to "read me", homes_readme_path, class: "btn btn-primary"
+
+.mb-3
+h3 データ加工＆表示
+= search_form_for @search,  url: homes_top_path do |f|
+  .form-group.row
+    =f.label :date_gteq, '開始日(YYYY-MM-DD形式)', class:'col-sm-2 col-form-label'
+    .col-sm-10
+      = f.search_field :date_gteq, class: 'form-control'
+  .form-group.row
+    =f.label :date_lteq, '終了日(YYYY-MM-DD形式)', class:'col-sm-2 col-form-label'
+    .col-sm-10
+      = f.search_field :date_lteq, class: 'form-control'
+  .form-group
+    = f.submit class: 'btn btn-primary mb-3'
+
+
+
+.mb-3
+table.table.table-hover
+  thead.thead-default
+    tr
+      th= "項目"
+      th= "開始日"
+      th= "終了日"
+      th= "累計"
+  tbody
+    tr
+      td= "日付"
+      td= @mindate.date
+      td= @maxdate.date
+      td= (Date.parse(@maxdate.date) - Date.parse(@mindate.date)).to_i.to_s + " 日間"
+    tr
+      td= "テスト数"
+      td= @mindate.tested
+      td= @maxdate.tested
+      td= @result.sum(:tested)
+    tr
+      td= "陽性者数"
+      td= @mindate.positive
+      td= @maxdate.positive
+      td= @result.sum(:positive)
+    tr
+      td= "新規陽性率（％）"
+      td= (@mindate.positive.to_f / @mindate.tested.to_f) * 100
+      td= (@maxdate.positive.to_f / @maxdate.tested.to_f) * 100
+      td= (@result.sum(:positive).to_f / @result.sum(:tested).to_f) * 100
+
+
+.mb-3
+-if (@result.sum(:positive).to_f / @result.sum(:tested).to_f) * 100 > 5
+  p #{@mindate.date} ~ #{@maxdate.date}間の新規陽性率は5%を超えています。
+-else
+  p コメント：#{@mindate.date} ~ #{@maxdate.date}間の新規陽性率は5%以内に抑えられています。
+
+
+/= search_form_for @q, url: homes_graph_path, class: 'mb-5' do |f|
+  .form-group.row
+    = f.label :date_gteq, 'from', class: 'col-sm2 col-form-label'
+    .col-sm-10
+      = f.search_field :date_gteq, class: 'form-control'
+    = f.label :date_lteq, 'to', class: 'col-sm2 col-form-label'
+    .col-sm-10
+      = f.search_field :date_lteq, class: 'form-control'
+  .form-group
+    = f.submit class: 'btn btn-outline-primary'
+
+
+/p
+  = link_to "グラフ作成", homes_graph_path, class: "btn btn-primary"
+
+//chartkickでグラフ作成模索中
+/= line_chart @result.select(:date, :tested).group(:date).sum(:tested)
+/= line_chart @result.group(:date).sum(:tested)
+/= column_chart @all.group(:date).sum(:tested)
+
+.mb-3
+h2 DB確認・データ投入
+p （インポート機能を使用しないで下さい）
+p
+  = link_to "データ確認", homes_data_path, class: "btn btn-primary"
+
+= form_tag import_homes_path, multipart: true, class: 'mb-3' do
+  = file_field_tag :file
+  = submit_tag "インポート", class: "btn btn-primary"

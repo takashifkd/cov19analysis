@@ -1,0 +1,11 @@
+development:
+  adapter: async
+
+test:
+  adapter: test
+
+production:
+  <<: *default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5

@@ -1,0 +1,21 @@
+h1 データ確認
+= link_to "topへ戻る", homes_top_path, class: "btn btn-primary"
+.mb-3
+table.table.table-hover
+  thead.thead-default
+    tr
+      th= PcrTest.human_attribute_name(:date)
+      th= PcrTest.human_attribute_name(:tested)
+      th= PcrTest.human_attribute_name(:positive)
+      th= PcrTest.human_attribute_name(:created_at)
+      /th
+  tbody
+    - @pcr.each do |data|
+      tr
+        td= data.date
+        td= data.tested
+        td= data.positive
+        td= data.created_at
+        /td
+          = link_to '編集', homes_data_path, class: 'btn btn-primary mr-3'
+p Find me in app/views/homes/export.html.slim

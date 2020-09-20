@@ -1,0 +1,28 @@
+h1 データ確認
+= link_to "トップへ", root_path, class: "btn btn-info"
+
+/canvas#myChart
+/javascript:
+  var ctx = document.getElementById("myChart");
+  var myChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: ["Japanese", "Mathematics", "English", "Social studies", "Science"],
+      datasets: [{
+        label: 'A_kun',
+        backgroundColor: "rgba(0,0,80,0.4)",
+        borderColor: "rgba(0,0,80,1)",
+        data: [80, 90, 60, 70, 100, 70]
+      }, {
+        label: 'B_kun',
+        backgroundColor: "rgba(0,255,0,0.4)",
+        borderColor: "rgba(0,255,0,1)",
+        data: [90, 75, 80, 65, 80, 70]
+      }]
+    }
+  });
+
+/= line_chart @pcrGraph.pluck(:date, :positive).to_h
+/= line_chart @pcrGraph.map { |pcr| {name: pcr.date, date: pcr.positive}}
+/= line_chart @pcrGraph.order(:date).group_by_day(:date).sum(:positive)
+= line_chart @pcrGraph.order(:date).group_by_day(:created_at).count(:positive)
